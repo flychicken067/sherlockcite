@@ -1,8 +1,8 @@
-# Citation Audits Against AI Hallucinations
+# SherlockCite
 
 ## Verifying References by Identity, Not Search Hits
 
-This repository contains a Codex skill for auditing bibliographies that may contain AI-hallucinated, distorted, duplicated, or weakly sourced references.
+SherlockCite is a Codex skill for auditing bibliographies that may contain AI-hallucinated, distorted, duplicated, or weakly sourced references.
 
 The core idea is simple:
 
@@ -33,9 +33,9 @@ Preferred evidence includes CNKI, Wanfang, VIP, journal/publisher pages, DOI/Cro
 ## Repository Layout
 
 ```text
-citation-audit-against-ai-hallucinations/
+sherlockcite/
   README.md
-  citation-audit-against-ai-hallucinations/
+  sherlockcite/
     SKILL.md
     agents/openai.yaml
     references/audit-standard.md
@@ -47,17 +47,17 @@ citation-audit-against-ai-hallucinations/
 Copy the skill folder into your Codex skills directory:
 
 ```bash
-cp -r citation-audit-against-ai-hallucinations ~/.codex/skills/
+cp -r sherlockcite ~/.codex/skills/
 ```
 
-Then ask Codex to use `citation-audit-against-ai-hallucinations` to audit a bibliography or generate an evidence workbook.
+Then ask Codex to use `sherlockcite` to audit a bibliography or generate an evidence workbook.
 
 ## Build An Audit Workbook
 
 The included script formats audited CSV rows into a review workbook:
 
 ```bash
-python citation-audit-against-ai-hallucinations/scripts/build_audit_workbook.py input.csv output.xlsx
+python sherlockcite/scripts/build_audit_workbook.py input.csv output.xlsx
 ```
 
 Minimal CSV:

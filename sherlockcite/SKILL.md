@@ -1,9 +1,9 @@
 ---
-name: citation-audit-against-ai-hallucinations
+name: sherlockcite
 description: Verify bibliographies and reference lists for possible AI hallucinations using identity-based, multi-source evidence. Use when Codex needs to audit references from Word/Excel/CSV/PDF files, distinguish real citations from fabricated or malformed ones, compare CNKI/Wanfang/VIP/Google Scholar/Baidu Scholar/publisher evidence, create evidence screenshots, or produce an Excel action list that avoids deleting real references merely because a first search fails.
 ---
 
-# Citation Audits Against AI Hallucinations
+# SherlockCite
 
 Audit references by identity, not by search-result luck. A reference is credible only when the evidence points to the same work: title, author, source, year, and ideally volume/issue/pages or degree-granting institution.
 

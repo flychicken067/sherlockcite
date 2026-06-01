@@ -1,4 +1,4 @@
 interface:
-  display_name: "Citation Audits Against AI Hallucinations"
+  display_name: "SherlockCite"
   short_description: "Verify references by identity instead of search hits."
   default_prompt: "Audit a bibliography for possible AI hallucinations using identity-based, multi-source evidence."
