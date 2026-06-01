@@ -1,0 +1,4 @@
+编号,原参考文献,最终判定,主证据URL,多源证据URL,截图文件,可靠性说明,问题备注
+1,"He K, Zhang X, Ren S, Sun J. Deep Residual Learning for Image Recognition[C]. CVPR, 2016.","◎ 真实","https://openaccess.thecvf.com/content_cvpr_2016/html/He_Deep_Residual_Learning_CVPR_2016_paper.html","https://arxiv.org/abs/1512.03385","ref-001.png","CVF and arXiv records match title, authors, venue, and year.",""
+2,"Example Author. A Hard-to-Find Local Journal Article[J]. Local Finance, 2024(3):1-8.","△ 待核","","","ref-002.png","No stable database record yet; similar results only.","Do not delete solely because search failed."
+3,"Same Author. Duplicate Article[J]. Journal, 2022(1):10-12.","重复","","","","Duplicate of an earlier reference.","Merge duplicate during final editing."
