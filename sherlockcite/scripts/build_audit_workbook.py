@@ -3,6 +3,8 @@
 
 The script intentionally does not search the web. It formats already-collected
 evidence into a reviewer-friendly workbook and adds conservative next actions.
+Output sheets and statuses are English-first to avoid encoding issues in public
+GitHub repositories and cross-platform terminal sessions.
 """
 
 from __future__ import annotations
@@ -17,20 +19,20 @@ from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
 
 
-STATUS_ORDER = ["◎ 真实", "○ 基本可信", "△ 待核", "重复", "疑似编造/不采用"]
+STATUS_ORDER = ["VERIFIED", "PLAUSIBLE", "PENDING", "DUPLICATE", "SUSPECT"]
 
 
 ALIASES = {
-    "编号": ["编号", "id", "number", "ref_id"],
-    "原参考文献": ["原参考文献", "文献（著录）", "reference", "citation"],
-    "最终判定": ["最终判定", "最终综合判定", "status", "判定"],
-    "主证据URL": ["主证据URL", "证据/来源 URL", "source_url", "url"],
-    "多源证据URL": ["多源证据URL", "secondary_urls", "extra_urls"],
-    "截图文件": ["截图文件", "screenshot", "screenshot_file"],
-    "匹配字段": ["匹配字段", "matched_fields"],
-    "可靠性说明": ["可靠性说明", "综合依据", "evidence_note", "note"],
-    "问题备注": ["问题备注", "issues", "problem_note"],
-    "建议动作": ["建议动作", "next_action", "action"],
+    "id": ["id", "number", "ref_id"],
+    "reference": ["reference", "citation", "raw_reference"],
+    "status": ["status", "final_status", "decision"],
+    "source_url": ["source_url", "url", "primary_url"],
+    "secondary_urls": ["secondary_urls", "extra_urls", "multi_source_urls"],
+    "screenshot_file": ["screenshot_file", "screenshot"],
+    "matched_fields": ["matched_fields"],
+    "evidence_note": ["evidence_note", "note", "reliability_note"],
+    "problem_note": ["problem_note", "issues"],
+    "next_action": ["next_action", "action"],
 }
 
 
@@ -41,17 +43,20 @@ def usage() -> None:
 
 def normalize_status(value: str) -> str:
     text = (value or "").strip()
-    if text.startswith("◎"):
-        return "◎ 真实"
-    if text.startswith("○") or "部分确认" in text or "基本可信" in text:
-        return "○ 基本可信"
-    if text.startswith("△") or "待核" in text or "建议核对" in text:
-        return "△ 待核"
-    if "重复" in text:
-        return "重复"
-    if "疑似" in text or "编造" in text or "不采用" in text:
-        return "疑似编造/不采用"
-    return text or "△ 待核"
+    upper = text.upper()
+    if upper in STATUS_ORDER:
+        return upper
+    if "verified" in upper:
+        return "VERIFIED"
+    if "plausible" in upper:
+        return "PLAUSIBLE"
+    if "pending" in upper:
+        return "PENDING"
+    if "duplicate" in upper:
+        return "DUPLICATE"
+    if "suspect" in upper:
+        return "SUSPECT"
+    return text or "PENDING"
 
 
 def pick(row: dict[str, str], key: str) -> str:
@@ -62,17 +67,17 @@ def pick(row: dict[str, str], key: str) -> str:
 
 
 def next_action(status: str) -> str:
-    if status == "◎ 真实":
-        return "保留；如学校要求，可抽样补充数据库题录链接。"
-    if status == "○ 基本可信":
-        return "建议保留；定稿前补 CNKI/万方/维普/期刊官网/出版社页等强证据。"
-    if status == "△ 待核":
-        return "不要删除；继续人工核查数据库、期刊官网、机构页或引用反查。"
-    if status == "重复":
-        return "合并或删除重复编号，保留著录更完整的一条。"
-    if status == "疑似编造/不采用":
-        return "暂不采用；必须写明冲突证据或多源失败路径。"
-    return "人工复核。"
+    if status == "VERIFIED":
+        return "Keep. Add a database or publisher URL only if the final submission requires it."
+    if status == "PLAUSIBLE":
+        return "Keep for now. Before final submission, add a stronger first-party/database record if possible."
+    if status == "PENDING":
+        return "Do not delete. Continue manual checks in databases, journal sites, institution pages, or exact citation trails."
+    if status == "DUPLICATE":
+        return "Merge or remove the duplicate entry; keep the most complete citation."
+    if status == "SUSPECT":
+        return "Do not use unless stronger evidence appears; document the conflict or failed source paths."
+    return "Review manually."
 
 
 def load_rows(path: Path) -> list[dict[str, str]]:
@@ -80,20 +85,20 @@ def load_rows(path: Path) -> list[dict[str, str]]:
         raw = list(csv.DictReader(f))
     rows = []
     for item in raw:
-        status = normalize_status(pick(item, "最终判定"))
-        action = pick(item, "建议动作") or next_action(status)
+        status = normalize_status(pick(item, "status"))
+        action = pick(item, "next_action") or next_action(status)
         rows.append(
             {
-                "编号": pick(item, "编号"),
-                "原参考文献": pick(item, "原参考文献"),
-                "最终判定": status,
-                "主证据URL": pick(item, "主证据URL"),
-                "多源证据URL": pick(item, "多源证据URL"),
-                "截图文件": pick(item, "截图文件"),
-                "匹配字段": pick(item, "匹配字段"),
-                "可靠性说明": pick(item, "可靠性说明"),
-                "问题备注": pick(item, "问题备注"),
-                "建议动作": action,
+                "id": pick(item, "id"),
+                "reference": pick(item, "reference"),
+                "status": status,
+                "source_url": pick(item, "source_url"),
+                "secondary_urls": pick(item, "secondary_urls"),
+                "screenshot_file": pick(item, "screenshot_file"),
+                "matched_fields": pick(item, "matched_fields"),
+                "evidence_note": pick(item, "evidence_note"),
+                "problem_note": pick(item, "problem_note"),
+                "next_action": action,
             }
         )
     return rows
@@ -120,25 +125,25 @@ def style_sheet(ws, color: str = "1F4E78") -> None:
 
 def write_summary(wb: Workbook, rows: list[dict[str, str]]) -> None:
     ws = wb.active
-    ws.title = "给朋友看的结论"
-    counts = Counter(row["最终判定"] for row in rows)
-    ws.append(["项目", "结论/动作"])
-    ws.append(["审查原则", "按身份核对，不按搜索排名核对；查不到不等于编造。"])
-    ws.append(["最终分布", "；".join(f"{k} {counts.get(k, 0)} 条" for k in STATUS_ORDER)])
-    ws.append(["优先动作", "先处理重复项，再人工核查△待核；○基本可信定稿前补强来源。"])
-    ws.append(["删除原则", "只有明确元数据冲突或多源反查失败并有异常时，才考虑疑似编造/不采用。"])
-    ws.column_dimensions["A"].width = 20
-    ws.column_dimensions["B"].width = 110
+    ws.title = "Summary"
+    counts = Counter(row["status"] for row in rows)
+    ws.append(["Item", "Conclusion / Action"])
+    ws.append(["Audit principle", "Verify by identity, not by search rank. Missing search results do not prove fabrication."])
+    ws.append(["Status distribution", "; ".join(f"{k}: {counts.get(k, 0)}" for k in STATUS_ORDER)])
+    ws.append(["Priority", "Handle duplicates, then manually check PENDING items. Add stronger evidence for PLAUSIBLE items before final submission."])
+    ws.append(["Deletion rule", "Classify as SUSPECT only with explicit metadata conflict or repeated independent source failure plus abnormal citation structure."])
+    ws.column_dimensions["A"].width = 22
+    ws.column_dimensions["B"].width = 120
     style_sheet(ws, "548235")
 
 
 def write_details(wb: Workbook, rows: list[dict[str, str]]) -> None:
-    ws = wb.create_sheet("最终核验明细")
+    ws = wb.create_sheet("Audit Details")
     headers = list(rows[0].keys()) if rows else list(ALIASES.keys())
     ws.append(headers)
     for row in rows:
         ws.append([row.get(h, "") for h in headers])
-    widths = [10, 76, 16, 46, 46, 36, 34, 60, 50, 56]
+    widths = [10, 80, 16, 48, 48, 36, 36, 64, 54, 64]
     for idx, width in enumerate(widths[: len(headers)], 1):
         ws.column_dimensions[get_column_letter(idx)].width = width
     for row_idx in range(2, ws.max_row + 1):
@@ -151,14 +156,14 @@ def write_details(wb: Workbook, rows: list[dict[str, str]]) -> None:
 
 
 def write_actions(wb: Workbook, rows: list[dict[str, str]]) -> None:
-    ws = wb.create_sheet("待处理清单")
-    ws.append(["优先级", "编号", "最终判定", "下一步动作", "原参考文献"])
-    priority = {"△ 待核": "P1", "重复": "P2", "○ 基本可信": "P3", "疑似编造/不采用": "P0"}
-    selected = [r for r in rows if r["最终判定"] in priority]
-    selected.sort(key=lambda r: priority[r["最终判定"]])
+    ws = wb.create_sheet("Action List")
+    ws.append(["priority", "id", "status", "next_action", "reference"])
+    priority = {"SUSPECT": "P0", "PENDING": "P1", "DUPLICATE": "P2", "PLAUSIBLE": "P3"}
+    selected = [r for r in rows if r["status"] in priority]
+    selected.sort(key=lambda r: priority[r["status"]])
     for row in selected:
-        ws.append([priority[row["最终判定"]], row["编号"], row["最终判定"], row["建议动作"], row["原参考文献"]])
-    for idx, width in enumerate([10, 10, 16, 62, 86], 1):
+        ws.append([priority[row["status"]], row["id"], row["status"], row["next_action"], row["reference"]])
+    for idx, width in enumerate([10, 10, 16, 68, 90], 1):
         ws.column_dimensions[get_column_letter(idx)].width = width
     style_sheet(ws, "9E480E")
 

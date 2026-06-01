@@ -1,6 +1,6 @@
 # Identity-Based Citation Audit Standard
 
-Use this checklist when auditing references that may have been generated or distorted by AI.
+Use this checklist when auditing references that may have been generated, distorted, or fabricated by AI.
 
 ## Decision Logic
 
@@ -15,7 +15,7 @@ Ask these questions in order:
 
 ## Status Definitions
 
-### ◎ 真实
+### VERIFIED
 
 Use when identity is confirmed by:
 
@@ -24,23 +24,23 @@ Use when identity is confirmed by:
 
 Examples:
 
-- CNKI/Wanfang/VIP record lists title, author, journal, year.
-- Journal website table of contents lists title, author, volume/issue/pages.
-- DOI/Crossref/publisher page lists title, author, journal, year.
-- University repository lists dissertation title, author, institution, year.
+- CNKI, Wanfang, or VIP record lists title, author, journal, and year.
+- Journal table of contents lists title, author, volume, issue, and pages.
+- DOI, Crossref, or publisher page lists title, author, journal, and year.
+- University repository lists dissertation title, author, institution, and year.
 
-### ○ 基本可信
+### PLAUSIBLE
 
-Use when the work appears real, but the evidence is not yet a complete first-party/database record.
+Use when the work appears real, but the evidence is not yet a complete first-party or database record.
 
 Examples:
 
-- Baidu Scholar or Google Scholar shows title, author, year, source.
-- Author unit page lists the work as a publication.
+- Baidu Scholar or Google Scholar shows title, author, year, and source.
+- Author-unit page lists the work as a publication.
 - Another paper's reference list cites the same work exactly.
 - A journal directory mirror shows the title and source but not all fields.
 
-### △ 待核
+### PENDING
 
 Use when evidence is incomplete or unavailable.
 
@@ -54,11 +54,11 @@ Examples:
 
 Do not recommend deletion from this status.
 
-### 重复
+### DUPLICATE
 
 Use when the same work appears more than once. Keep original numbering and identify the earlier duplicate when possible.
 
-### 疑似编造/不采用
+### SUSPECT
 
 Use only with explicit reasons:
 
@@ -76,29 +76,29 @@ Chinese journal article:
 3. VIP
 4. journal website or table of contents
 5. Baidu Scholar
-6. author-unit/institution page
+6. author-unit or institution page
 7. exact reference-list citation in another paper
 
 Chinese dissertation:
 
 1. CNKI doctoral/master database
 2. Wanfang dissertations
-3. university repository/library
+3. university repository or library
 4. Baidu Scholar
 5. advisor/student CV or institution page
 
 English paper:
 
-1. DOI resolver / Crossref
+1. DOI resolver or Crossref
 2. publisher page
 3. Google Scholar
-4. Semantic Scholar/OpenAlex
-5. arXiv/RePEc/SSRN when domain-appropriate
+4. Semantic Scholar or OpenAlex
+5. arXiv, RePEc, or SSRN when domain-appropriate
 
-Reports/policies:
+Reports and policies:
 
 1. official issuer site
-2. government/association archive
+2. government or association archive
 3. publisher or institutional repository
 4. library catalog or stable secondary record
 
@@ -114,4 +114,4 @@ Reports/policies:
 
 Use this short explanation in deliverables:
 
-> This audit verifies whether each reference points to the same real work, not whether a search engine returns a similar result. A missing public search result is treated as "pending verification", not fabrication. Only explicit metadata conflicts or repeated failure across independent source paths justify "suspected fabricated / do not use".
+> This audit verifies whether each reference points to the same real work, not whether a search engine returns a similar result. A missing public search result is treated as pending verification, not fabrication. Only explicit metadata conflicts or repeated failure across independent source paths justify a suspect classification.
