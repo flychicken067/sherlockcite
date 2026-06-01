@@ -30,6 +30,8 @@ SherlockCite uses a conservative identity-based standard:
 
 Preferred evidence includes CNKI, Wanfang, VIP, journal or publisher pages, DOI/Crossref, university repositories, Google Scholar, Baidu Scholar, author-unit pages, and exact reference-list citations.
 
+Chinese bibliography audits are first-class supported. Keep the skill and scripts English-first for cross-agent compatibility, then use `docs/zh-CN.md` for Chinese paper workflows, CNKI/Wanfang/VIP/Baidu Scholar search logic, and Chinese-facing reviewer language.
+
 ## Repository Layout
 
 ```text
@@ -42,6 +44,8 @@ sherlockcite/
     scripts/build_audit_workbook.py
   examples/
     sample-audit.csv
+  docs/
+    zh-CN.md
 ```
 
 ## Use As A Codex Skill
@@ -68,6 +72,8 @@ Minimal CSV:
 id,reference,status,source_url,secondary_urls,screenshot_file,evidence_note,problem_note
 1,Example reference,VERIFIED,https://example.org,https://example.edu,ref-001.png,Official record matches title author year,
 ```
+
+For Chinese projects, keep the CSV headers English for tooling stability, but write the references and evidence notes in Chinese. See `examples/chinese-audit-sample.csv`.
 
 ## Practical Rule
 
